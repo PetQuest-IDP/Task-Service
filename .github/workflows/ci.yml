@@ -31,9 +31,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build Docker image
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false
-          tags: task-service:ci-${{ github.sha }}
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/task-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/task-service:${{ github.sha }}
